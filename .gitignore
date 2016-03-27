@@ -1,1 +1,3 @@
 /.vagrant
+/floppy.img
+/kernel/loader.bin
