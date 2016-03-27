@@ -1,4 +1,4 @@
-.PHONY: floppy.img
+.PHONY: all
 
 all: floppy.img
 
