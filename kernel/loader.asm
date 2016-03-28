@@ -19,6 +19,12 @@ start:
     mov dh, 0       ; head
     mov bx, 0x7e00  ; read buffer
     int 0x13
+    mov si, could_not_read_disk
+    jc error_bios
+    ; enable A20 line
+    mov ax, 0x2401
+    int 0x15
+    mov si, could_not_enable_a20
     jc error_bios
     ; load protected mode GDT and a null IDT (we don't need interrupts)
     cli
@@ -31,8 +37,7 @@ start:
     ; far jump to load CS with 32 bit segment
     jmp 0x08:protected_mode
 
-error_bios:
-    mov si, .msg
+error_bios: ; pass msg in SI
 .loop:
     lodsb
     or al, al
@@ -41,8 +46,8 @@ error_bios:
     int 0x10
     jmp .loop
 .end:
-    jmp $
-    .msg db "could not read disk", 0
+    cli
+    hlt
 
     use32
 
@@ -56,15 +61,14 @@ error: ; pass msg in ESI
     stosw
     jmp .loop
 .end:
-    jmp $
+    cli
+    hlt
 
 protected_mode:
     ; load all the other segments with 32 bit data segments
     mov eax, 0x10
     mov ds, eax
     mov es, eax
-    mov fs, eax
-    mov gs, eax
     mov ss, eax
 
     ; set up stack
@@ -124,28 +128,25 @@ protected_mode:
     ; load 64 bit GDT
     lgdt [gdtr64]
 
-    ; reload data segment registers
-    mov ax, 0x10
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
-
     ; reload code segment
     jmp 0x08:long_mode
 
-long_mode: ; 🎉
+long_mode:
+    use64 ; 🎉
 
-    ; clear screen green
-    mov ax, 0x2000
-    mov edi, 0xb8000
-    mov ecx, 80*25
-    rep stosw
+    ; map kernel in higher half before jumping to it
+    mov qword [pml4 + 510 * 8], pdp | PAGE_PRESENT | PAGE_WRITABLE
 
-    ; hang
-    jmp $
+    ; recursively map PML4
+    mov qword [pml4 + 511 * 8], pml4 | PAGE_PRESENT | PAGE_WRITABLE
 
+    ; jump to into higher half kernel
+    ; need to use an indirect jmp because relative jumps are only 32 bit
+    mov rax, 0xffff_ff00_0000_7e00
+    jmp rax
+
+could_not_read_disk db "could not read disk", 0
+could_not_enable_a20 db "could not enable A20", 0
 no_extended_processor_information db "extended processor information not supported on this CPU", 0
 no_long_mode db "long mode not supported on this CPU", 0
 
