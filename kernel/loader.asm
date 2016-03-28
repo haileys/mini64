@@ -26,6 +26,24 @@ start:
     int 0x15
     mov si, could_not_enable_a20
     jc error_bios
+    ; read memory map
+    mov di, memory_map
+    xor ebx, ebx
+    xor bp, bp
+.memory_map_loop:
+    mov edx, 0x534d4150
+    mov eax, 0xe820
+    mov ecx, 24
+    int 0x15
+    jc .memory_map_done
+    test ebx, ebx
+    jz .memory_map_done
+    add di, 24
+    inc bp
+    cmp di, memory_map_end
+    jb .memory_map_loop
+.memory_map_done:
+    mov [memory_map_count], bp
     ; load protected mode GDT and a null IDT (we don't need interrupts)
     cli
     lgdt [gdtr32]
@@ -145,10 +163,11 @@ long_mode:
     mov rax, 0xffff_ff00_0000_7e00
     jmp rax
 
-could_not_read_disk db "could not read disk", 0
-could_not_enable_a20 db "could not enable A20", 0
-no_extended_processor_information db "extended processor information not supported on this CPU", 0
-no_long_mode db "long mode not supported on this CPU", 0
+could_not_read_disk db "E1", 0
+could_not_enable_a20 db "E2", 0
+could_not_read_memory_map db "E3", 0
+no_extended_processor_information db "E4", 0
+no_long_mode db "E5", 0
 
 gdtr32:
     dw (gdt32.end - gdt32) - 1 ; size
@@ -197,15 +216,20 @@ GDT64_READWRITE  equ 1 << 41
 GDT64_EXECUTABLE equ 1 << 43
 GDT64_64BIT      equ 1 << 53
 
+; paging flags
+PAGE_PRESENT  equ 1 << 0
+PAGE_WRITABLE equ 1 << 1
+PAGE_HUGE     equ 1 << 7
+
 ; long mode page tables:
 pml4 equ 0x1000
 pdp  equ 0x2000
 pd   equ 0x3000
 
-; paging flags
-PAGE_PRESENT  equ 1 << 0
-PAGE_WRITABLE equ 1 << 1
-PAGE_HUGE     equ 1 << 7
+; memory map:
+memory_map_count equ 0x4000
+memory_map equ 0x4008
+memory_map_end equ 0x4ff8
 
 times 510-($-$$) db 0
 db 0x55
