@@ -19,7 +19,7 @@ kernel/loader.bin: kernel/loader.asm
 	@echo nasm $@
 	@$(NASM) -f bin -o $@ $<
 
-kernel/kernel.bin: kernel/start.o kernel/main.o
+kernel/kernel.bin: kernel/start.o kernel/main.o kernel/serial.o
 	@echo ld $@
 	@$(LD) -T kernel/linker.ld -o $@ $^
 
