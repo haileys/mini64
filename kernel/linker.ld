@@ -11,11 +11,11 @@ SECTIONS {
         * (.text)
     }
 
-    .rodata ALIGN(0x1000) : AT(ADDR(.rodata) - kernel_base) {
+    .rodata : AT(ADDR(.rodata) - kernel_base) {
         * (.rodata)
     }
 
-    .data ALIGN(0x1000) : AT(ADDR(.data) - kernel_base) {
+    .data : AT(ADDR(.data) - kernel_base) {
         * (.data)
     }
 }
