@@ -44,6 +44,10 @@ start:
     jb .memory_map_loop
 .memory_map_done:
     mov [memory_map_count], bp
+    ; tell BIOS we intend to run in long mode
+    mov ax, 0xec00
+    mov bl, 2
+    int 0x15
     ; load protected mode GDT and a null IDT (we don't need interrupts)
     cli
     lgdt [gdtr32]
