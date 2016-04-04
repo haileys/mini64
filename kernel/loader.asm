@@ -112,10 +112,10 @@ protected_mode:
     test edx, 1 << 29
     jz error
 
-    ; zero out PML4, PDP and PD (assumes contiguity)
+    ; zero out page mapping tables (contiguity assumed)
     xor eax, eax
     mov edi, pml4
-    mov ecx, 0x3000 / 4
+    mov ecx, (6 * 0x1000) / 4
     rep stosd
 
     ; identity map first 2MiB of physical memory
@@ -226,7 +226,7 @@ PAGE_PRESENT  equ 1 << 0
 PAGE_WRITABLE equ 1 << 1
 PAGE_HUGE     equ 1 << 7
 
-; long mode page tables:
+; long mode page tables (contiguity assumed):
 pml4 equ 0x1000
 pdp  equ 0x2000
 pd   equ 0x3000
