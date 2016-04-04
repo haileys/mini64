@@ -1,7 +1,9 @@
+#include "mini64.h"
 #include "console.h"
 #include "critical.h"
 #include "paging.h"
 #include "error.h"
+#include "string.h"
 
 #define REGION_USABLE           1
 #define REGION_RESERVED         2
@@ -119,30 +121,31 @@ page_map(virt_t virt, phys_t phys, page_flags_t flags)
 {
     error_t rc;
 
-    uint64_t pml_entry;
-
     BEGIN_CRITICAL_SECTION;
 
-    if (!(PML4_TABLE[PML4_INDEX(virt)] & PAGE_PRESENT)) {
+    if (!(PML4_ENTRY(virt) & PAGE_PRESENT)) {
+        uint64_t pml_entry;
         CHECKED(pml_entry_alloc(&pml_entry));
 
-        PML4_TABLE[PML4_INDEX(virt)] = pml_entry;
+        PML4_ENTRY(virt) = pml_entry;
 
         invlpg(PML3_TABLE(virt));
     }
 
-    if (!(PML3_TABLE(virt)[PML3_INDEX(virt)] & PAGE_PRESENT)) {
+    if (!(PML3_ENTRY(virt) & PAGE_PRESENT)) {
+        uint64_t pml_entry;
         CHECKED(pml_entry_alloc(&pml_entry));
 
-        PML3_TABLE(virt)[PML3_INDEX(virt)] = pml_entry;
+        PML3_ENTRY(virt) = pml_entry;
 
         invlpg(PML2_TABLE(virt));
     }
 
-    if (!(PML2_TABLE(virt)[PML2_INDEX(virt)] & PAGE_PRESENT)) {
+    if (!(PML2_ENTRY(virt) & PAGE_PRESENT)) {
+        uint64_t pml_entry;
         CHECKED(pml_entry_alloc(&pml_entry));
 
-        PML2_TABLE(virt)[PML2_INDEX(virt)] = pml_entry;
+        PML2_ENTRY(virt) = pml_entry;
 
         invlpg(PML1_TABLE(virt));
     }

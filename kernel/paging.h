@@ -23,6 +23,9 @@ typedef uint64_t page_flags_t;
 #define PML2_TABLE(virt) ((uint64_t*)(0xffffffffc0000000ull + ((((uint64_t)(virt)) >> 18) & 0x003ffff000ull)))
 #define PML1_TABLE(virt) ((uint64_t*)(0xffffff8000000000ull + ((((uint64_t)(virt)) >> 9) & 0x7ffffff000ull)))
 
+#define PML4_ENTRY(virt) PML4_TABLE[PML4_INDEX(virt)]
+#define PML3_ENTRY(virt) PML3_TABLE(virt)[PML3_INDEX(virt)]
+#define PML2_ENTRY(virt) PML2_TABLE(virt)[PML2_INDEX(virt)]
 #define PML1_ENTRY(virt) PML1_TABLE(virt)[PML1_INDEX(virt)]
 
 #define PAGE_PRESENT    (1ull << 0)
