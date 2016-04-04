@@ -131,7 +131,7 @@ phys_init()
 }
 
 static error_t
-pml_entry_alloc(uint64_t* out_pml_entry)
+pm_entry_alloc(uint64_t* out_pm_entry)
 {
     phys_t phys;
     error_t rc = phys_alloc_zero(&phys);
@@ -140,7 +140,7 @@ pml_entry_alloc(uint64_t* out_pml_entry)
         return rc;
     }
 
-    *out_pml_entry = phys | PAGE_PRESENT | PAGE_WRITABLE;
+    *out_pm_entry = phys | PAGE_PRESENT | PAGE_WRITABLE;
 
     return OK;
 }
@@ -153,28 +153,28 @@ page_map(virt_t virt, phys_t phys, page_flags_t flags)
     BEGIN_CRITICAL_SECTION;
 
     if (!(PML4_ENTRY(virt) & PAGE_PRESENT)) {
-        uint64_t pml_entry;
-        CHECKED(pml_entry_alloc(&pml_entry));
+        uint64_t pm_entry;
+        CHECKED(pm_entry_alloc(&pm_entry));
 
-        PML4_ENTRY(virt) = pml_entry;
+        PML4_ENTRY(virt) = pm_entry;
 
         invlpg(PML3_TABLE(virt));
     }
 
     if (!(PML3_ENTRY(virt) & PAGE_PRESENT)) {
-        uint64_t pml_entry;
-        CHECKED(pml_entry_alloc(&pml_entry));
+        uint64_t pm_entry;
+        CHECKED(pm_entry_alloc(&pm_entry));
 
-        PML3_ENTRY(virt) = pml_entry;
+        PML3_ENTRY(virt) = pm_entry;
 
         invlpg(PML2_TABLE(virt));
     }
 
     if (!(PML2_ENTRY(virt) & PAGE_PRESENT)) {
-        uint64_t pml_entry;
-        CHECKED(pml_entry_alloc(&pml_entry));
+        uint64_t pm_entry;
+        CHECKED(pm_entry_alloc(&pm_entry));
 
-        PML2_ENTRY(virt) = pml_entry;
+        PML2_ENTRY(virt) = pm_entry;
 
         invlpg(PML1_TABLE(virt));
     }
