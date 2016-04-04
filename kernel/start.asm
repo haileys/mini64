@@ -1,9 +1,10 @@
 use64
 
 global start
-extern main
 
-pml4 equ 0xfffffffffffff000
+extern main
+extern paging_init
+extern console_init
 
 start:
     ; reload data segment registers
@@ -15,14 +16,11 @@ start:
     mov ss, ax
 
     ; set up stack
-    mov rsp, 0xffffff0000007bfc
+    mov rsp, 0xffffff00001ffff8
 
-    ; unmap identity mapped first 2MB
-    mov qword [pml4], 0
+    call console_init
 
-    ; reload cr3 to flush TLB
-    mov rax, cr3
-    mov cr3, rax
+    call paging_init
 
     call main
 

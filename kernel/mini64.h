@@ -8,11 +8,8 @@ typedef unsigned long long uint64_t;
 
 typedef uint64_t size_t;
 
-typedef uint64_t phys_t;
+#define LOW_MEM(addr) ((void*)(addr))
 
-#define LOW_MEM(addr) (0xffffff0000000000ull | ((addr) & 0xfffff))
-
-void
-serial_write(const char* str);
+#define NULL ((void*)0)
 
 #endif

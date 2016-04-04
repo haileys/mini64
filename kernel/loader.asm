@@ -11,13 +11,13 @@ start:
     mov ss, ax
     ; initialize stack
     mov sp, 0x7bfe
-    ; load main kernel code into 0x7e00
+    ; load main kernel code
     mov ah, 2       ; read
-    mov al, 24      ; 24 sectors (12 KiB)
+    mov al, 16      ; 16 sectors (8 KiB)
     mov ch, 0       ; cylinder & 0xff
     mov cl, 2       ; sector | ((cylinder >> 2) & 0xc0)
     mov dh, 0       ; head
-    mov bx, 0x7e00  ; read buffer
+    mov bx, kernel  ; read buffer
     int 0x13
     mov si, could_not_read_disk
     jc error_bios
@@ -93,10 +93,10 @@ protected_mode:
     mov es, eax
 
     ; clear screen
-    xor eax, eax
+    mov ax, 0x0f
     mov edi, 0xb8000
-    mov ecx, 80*25 / 2
-    rep stosd
+    mov ecx, 80*25
+    rep stosw
 
     ; check if extended processor information is supported by cpuid
     mov eax, 0x80000000
@@ -152,15 +152,20 @@ protected_mode:
 long_mode:
     use64 ; 🎉
 
-    ; map kernel in higher half before jumping to it
-    mov qword [pml4 + 510 * 8], pdp | PAGE_PRESENT | PAGE_WRITABLE
+    ; map kernel in at 0xffff_ff00_0000_0000
+    mov qword [pml4 + 510 * 8], pdp_high | PAGE_PRESENT | PAGE_WRITABLE
+    mov qword [pdp_high], pd_high | PAGE_PRESENT | PAGE_WRITABLE
+    mov qword [pd_high], pt_high | PAGE_PRESENT | PAGE_WRITABLE
+    mov qword [pt_high + 0 * 8], kernel + (0 * 4096) | PAGE_PRESENT | PAGE_WRITABLE
+    mov qword [pt_high + 1 * 8], kernel + (1 * 4096) | PAGE_PRESENT | PAGE_WRITABLE
+    mov qword [pt_high + 511 * 8], kernel_stack | PAGE_PRESENT | PAGE_WRITABLE
 
     ; recursively map PML4
     mov qword [pml4 + 511 * 8], pml4 | PAGE_PRESENT | PAGE_WRITABLE
 
     ; jump to into higher half kernel
     ; need to use an indirect jmp because relative jumps are only 32 bit
-    mov rax, 0xffff_ff00_0000_7e00
+    mov rax, 0xffff_ff00_0000_0000
     jmp rax
 
 could_not_read_disk db "E1", 0
@@ -226,10 +231,18 @@ pml4 equ 0x1000
 pdp  equ 0x2000
 pd   equ 0x3000
 
+pdp_high equ 0x4000
+pd_high  equ 0x5000
+pt_high  equ 0x6000
+
 ; memory map:
-memory_map_count equ 0x4000
-memory_map equ 0x4008
-memory_map_end equ 0x4ff8
+memory_map_count equ 0x8000
+memory_map equ 0x8008
+memory_map_end equ 0x8ff8
+
+; kernel:
+kernel_stack equ 0x9000
+kernel equ 0xa000
 
 times 510-($-$$) db 0
 db 0x55

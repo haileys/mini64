@@ -1,7 +1,7 @@
 ENTRY(start)
 OUTPUT_FORMAT(binary)
 
-kernel_base = 0xffffff0000007e00;
+kernel_base = 0xffffff0000000000;
 
 SECTIONS {
     . = kernel_base;
