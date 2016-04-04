@@ -4,8 +4,9 @@ global start
 
 extern main
 extern paging_init
-extern phys_init
 extern console_init
+extern phys_init
+extern idt_init
 
 start:
     ; reload data segment registers
@@ -26,7 +27,9 @@ start:
 
     call phys_init
 
-    call main
+    call idt_init
 
-    cli
+    sti
+.idle:
     hlt
+    jmp .idle
