@@ -1,3 +1,5 @@
+use64
+
 ; very basic serial driver that only supports writing to COM1
 
 global serial_write
