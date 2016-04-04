@@ -10,6 +10,7 @@
 typedef enum {
     #define XX(a,b) a = b,
     ERROR_MAP(XX)
+    #undef XX
 } error_t;
 
 #define CHECKED(expr) if ((rc = (expr)) != OK) goto out
