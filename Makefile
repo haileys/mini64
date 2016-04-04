@@ -27,6 +27,6 @@ kernel/%.o: kernel/%.asm
 	@echo nasm $@
 	@$(NASM) -f elf64 -o $@ $<
 
-kernel/%.o: kernel/%.c
+kernel/%.o: kernel/%.c kernel/*.h
 	@echo cc $@
 	@$(CC) -o $@ -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -c $<
