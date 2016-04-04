@@ -1,6 +1,7 @@
 #include "console.h"
 #include "string.h"
 #include "io.h"
+#include "paging.h"
 
 #define CONSOLE_COLUMNS 80
 #define CONSOLE_ROWS 25

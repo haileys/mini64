@@ -39,6 +39,8 @@ typedef uint64_t page_flags_t;
 #define PAGE_GLOBAL     (1ull << 8)
 #define PAGE_NX         (1ull << 63)
 
+#define LOW_MEM(addr) ((void*)(addr))
+
 void
 paging_init();
 
