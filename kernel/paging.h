@@ -49,6 +49,12 @@ paging_init();
 void
 phys_init();
 
+uint64_t
+paging_current_pml4();
+
+void
+paging_set_pml4(uint64_t pml4);
+
 error_t
 page_map(virt_t virt, phys_t phys, page_flags_t flags);
 
