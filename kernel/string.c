@@ -18,9 +18,21 @@ memmove(void* dst_, const void* src_, size_t n)
 }
 
 void
-memzero64(uint64_t* ptr, size_t count)
+memzero(void* ptr, size_t count)
 {
-    for (size_t i = 0; i < count; i++) {
-        ptr[i] = 0;
+    if (count % 8 == 0) {
+        count /= 8;
+
+        uint64_t* p64 = ptr;
+
+        for (uint64_t i = 0; i < count; i++) {
+            p64[i] = 0;
+        }
+    } else {
+        uint8_t* p8 = ptr;
+
+        for (size_t i = 0; i < count; i++) {
+            p8[i] = 0;
+        }
     }
 }

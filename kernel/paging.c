@@ -248,7 +248,7 @@ phys_alloc_zero(phys_t* out_phys)
 
     uint64_t* ptr = map_temp(page);
 
-    memzero64(ptr, PAGE_SIZE / sizeof(uint64_t));
+    memzero(ptr, PAGE_SIZE);
 
     unmap_temp();
 

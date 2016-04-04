@@ -41,7 +41,7 @@ console_putc(char c)
     if (current_row == CONSOLE_ROWS) {
         current_row--;
         memmove(vram, vram + CONSOLE_COLUMNS, CONSOLE_COLUMNS * (CONSOLE_ROWS - 1) * 2);
-        memzero64((uint64_t*)(vram + CONSOLE_COLUMNS * (CONSOLE_ROWS - 1)), (CONSOLE_COLUMNS * 2) / 8);
+        memzero((uint64_t*)(vram + CONSOLE_COLUMNS * (CONSOLE_ROWS - 1)), CONSOLE_COLUMNS * 2);
     }
 }
 
