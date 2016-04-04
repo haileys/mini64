@@ -109,7 +109,7 @@ pml_entry_alloc(uint64_t* out_pml_entry)
         return rc;
     }
 
-    *out_pml_entry = phys | PAGE_PRESENT | PAGE_WRITABLE | PAGE_NX;
+    *out_pml_entry = phys | PAGE_PRESENT | PAGE_WRITABLE;
 
     return OK;
 }
