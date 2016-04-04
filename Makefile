@@ -2,6 +2,10 @@ CC=gcc
 LD=ld
 NASM=nasm
 
+CFLAGS=-Wall -Wextra -pedantic -Werror
+
+KERNEL_CFLAGS=-ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib
+
 .PHONY: all clean
 
 all: floppy.img
@@ -29,4 +33,4 @@ kernel/%.o: kernel/%.asm
 
 kernel/%.o: kernel/%.c kernel/*.h
 	@echo cc $@
-	@$(CC) -o $@ -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -c $<
+	@$(CC) -o $@ $(KERNEL_CFLAGS) $(CFLAGS) -c $<
