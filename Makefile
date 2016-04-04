@@ -6,6 +6,15 @@ CFLAGS=-Wall -Wextra -pedantic -Werror
 
 KERNEL_CFLAGS=-ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib
 
+KERNEL_OBJS=\
+	kernel/console.o \
+	kernel/main.o \
+	kernel/paging.o \
+	kernel/serial.o \
+	kernel/start.o \
+	kernel/string.o \
+	kernel/virt.o \
+
 .PHONY: all clean
 
 all: floppy.img
@@ -23,7 +32,7 @@ kernel/loader.bin: kernel/loader.asm
 	@echo nasm $@
 	@$(NASM) -f bin -o $@ $<
 
-kernel/kernel.bin: kernel/start.o kernel/main.o kernel/serial.o kernel/console.o kernel/paging.o kernel/string.o kernel/virt.o
+kernel/kernel.bin: $(KERNEL_OBJS)
 	@echo ld $@
 	@$(LD) -T kernel/linker.ld -o $@ $^
 
