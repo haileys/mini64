@@ -53,9 +53,21 @@ unmap_temp()
 void
 paging_init()
 {
+    // the bootloader identity maps the first 2 MiB of physical memory
+    // since that mapping is the only thing in the lower half of the address
+    // space at this stage, it's safe to just remove PML4[0]
+    PML4_TABLE[0] = 0;
+
+    // map the first 2 MiB of physical memory back in at LOW_MEM_MAPPING_BASE
+    PML2_ENTRY(LOW_MEM_MAPPING_BASE) = 0 | PAGE_PRESENT | PAGE_WRITABLE | PAGE_HUGE;
+}
+
+void
+phys_init()
+{
     // provided to us by the bootloader. this magic address only works until
     // we remove the identity map of the first 2 MiB of RAM
-    const struct memory_map* memory_map = (void*)0x8000;
+    const struct memory_map* memory_map = LOW_MEM(0x8000);
 
     log("paging_init");
 

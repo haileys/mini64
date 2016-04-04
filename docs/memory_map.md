@@ -8,6 +8,7 @@
 | `0xffff_ff00_001f_e000` | `0xffff_ff00_001f_efff` | Kernel stack guard (unmapped)      |
 | `0xffff_ff00_001f_f000` | `0xffff_ff00_001f_ffff` | Kernel stack during initialization |
 | `0xffff_ff00_1000_0000` | `0xffff_ff00_1fff_ffff` | Kernel dynamic allocation zone     |
+| `0xffff_ff00_2000_0000` | `0xffff_ff00_201f_ffff` | First 2 MiB of physical memory     |
 | `0xffff_ff80_0000_0000` | `0xffff_ffff_bfff_ffff` | Recursively mapped PML1 tables     |
 | `0xffff_ffff_c000_0000` | `0xffff_ffff_ffdf_ffff` | Recursively mapped PML2 tables     |
 | `0xffff_ffff_ffe0_0000` | `0xffff_ffff_ffff_efff` | Recursively mapped PML3 tables     |

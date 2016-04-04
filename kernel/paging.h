@@ -39,10 +39,15 @@ typedef uint64_t page_flags_t;
 #define PAGE_GLOBAL     (1ull << 8)
 #define PAGE_NX         (1ull << 63)
 
-#define LOW_MEM(addr) ((void*)(addr))
+#define LOW_MEM_MAPPING_BASE 0xffffff0020000000
+
+#define LOW_MEM(addr) ((void*)(LOW_MEM_MAPPING_BASE | ((addr) & 0x1fffff)))
 
 void
 paging_init();
+
+void
+phys_init();
 
 error_t
 page_map(virt_t virt, phys_t phys, page_flags_t flags);
