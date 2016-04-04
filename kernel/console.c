@@ -28,7 +28,7 @@ console_putc(char c)
         size_t index = current_row * CONSOLE_COLUMNS + current_column;
 
         vram[index].c = c;
-        vram[index].attr = 0x0f;
+        vram[index].attr = 0x07;
 
         current_column++;
 
