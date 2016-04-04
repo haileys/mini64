@@ -10,5 +10,5 @@
 | `0xffff_ff00_1000_0000` | `0xffff_ff00_1fff_ffff` | Kernel dynamic allocation zone     |
 | `0xffff_ff80_0000_0000` | `0xffff_ffff_bfff_ffff` | Recursively mapped PML1 tables     |
 | `0xffff_ffff_c000_0000` | `0xffff_ffff_ffdf_ffff` | Recursively mapped PML2 tables     |
-| `0xffff_ffff_c000_0000` | `0xffff_ffff_ffff_efff` | Recursively mapped PML3 tables     |
+| `0xffff_ffff_ffe0_0000` | `0xffff_ffff_ffff_efff` | Recursively mapped PML3 tables     |
 | `0xffff_ffff_ffff_f000` | `0xffff_ffff_ffff_ffff` | Recursively mapped PML4 table      |
