@@ -6,6 +6,7 @@ extern main
 extern paging_init
 extern console_init
 extern phys_init
+extern gdt_init
 extern idt_init
 
 start:
@@ -27,6 +28,8 @@ start:
     call console_init
 
     call phys_init
+
+    call gdt_init
 
     call idt_init
 

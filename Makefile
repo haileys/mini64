@@ -8,6 +8,7 @@ KERNEL_CFLAGS=-ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno
 
 KERNEL_OBJS=\
 	kernel/console.o \
+	kernel/gdt.o \
 	kernel/idt.o \
 	kernel/isrs.o \
 	kernel/main.o \
