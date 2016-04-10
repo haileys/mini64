@@ -4,6 +4,7 @@
 #include "virt.h"
 #include "string.h"
 #include "panic.h"
+#include "gdt.h"
 
 #define IDT_INTERRUPT_GATE 0x8e
 #define IDT_TRAP_GATE      0x8f
@@ -25,6 +26,9 @@ typedef struct {
 } __attribute__((packed))
 idtr_t;
 
+static idt_entry_t*
+idt;
+
 static void
 remap_irqs()
 {
@@ -41,17 +45,20 @@ remap_irqs()
     outb(0xa1, 0x00);
 }
 
-static void
-set_isr(idt_entry_t* entry, uint64_t handler)
+void
+idt_set_interrupt_gate(uint8_t vector, uint64_t handler)
 {
-    entry->offset_0_15 = handler;
-    entry->segment = 0x08;
-    entry->ist = 0;
-    entry->type = IDT_INTERRUPT_GATE;
-    entry->offset_16_31 = handler >> 16;
-    entry->offset_32_63 = handler >> 32;
-    entry->_reserved = 0;
+    idt[vector].offset_0_15 = handler;
+    idt[vector].segment = SEL_CODE;
+    idt[vector].ist = 0;
+    idt[vector].type = IDT_INTERRUPT_GATE;
+    idt[vector].offset_16_31 = handler >> 16;
+    idt[vector].offset_32_63 = handler >> 32;
+    idt[vector]._reserved = 0;
 }
+
+void
+idt_register_isrs();
 
 void
 idt_init()
@@ -60,7 +67,6 @@ idt_init()
 
     remap_irqs();
 
-    idt_entry_t* idt;
     if ((rc = virt_alloc((void**)&idt)) != OK) {
         log_x64("virt_alloc EALREADY?", rc == EALREADY);
         panic("could not allocate IDT");
@@ -68,11 +74,7 @@ idt_init()
 
     memzero(idt, sizeof(idt_entry_t) * 256);
 
-    void isr_32();
-    set_isr(&idt[32], (uint64_t)&isr_32);
-
-    void isr_39();
-    set_isr(&idt[39], (uint64_t)&isr_39);
+    idt_register_isrs();
 
     idtr_t idtr = { .base = idt, .limit = sizeof(idt_entry_t) * 256 - 1 };
 
