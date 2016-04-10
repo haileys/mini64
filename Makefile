@@ -24,15 +24,15 @@ KERNEL_OBJS=\
 all: floppy.img
 
 clean:
-	rm -f floppy.img kernel/*.bin kernel/*.o
+	rm -f floppy.img loader/loader.bin kernel/kernel.bin kernel/*.o
 
-floppy.img: kernel/loader.bin kernel/kernel.bin
+floppy.img: loader/loader.bin kernel/kernel.bin
 	@echo writing floppy.img
 	@dd of=$@ if=/dev/zero bs=512 count=2880 status=none
-	@dd of=$@ if=kernel/loader.bin bs=512 seek=0 conv=notrunc status=none
+	@dd of=$@ if=loader/loader.bin bs=512 seek=0 conv=notrunc status=none
 	@dd of=$@ if=kernel/kernel.bin bs=512 seek=1 conv=notrunc status=none
 
-kernel/loader.bin: kernel/loader.asm
+loader/loader.bin: loader/loader.asm
 	@echo nasm $@
 	@$(NASM) -f bin -o $@ $<
 
