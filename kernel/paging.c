@@ -33,20 +33,6 @@ invlpg(void* addr)
     __asm__ volatile("invlpg (%0)" :: "r"(addr) : "memory");
 }
 
-uint64_t
-paging_current_pml4()
-{
-    uint64_t pml4;
-    __asm__ volatile("mov %%cr3, %0" : "=r"(pml4));
-    return pml4;
-}
-
-void
-paging_set_pml4(uint64_t pml4)
-{
-    __asm__ volatile("mov %0, %%cr3" :: "r"(pml4) : "memory");
-}
-
 static void*
 map_temp(phys_t phys)
 {
@@ -77,7 +63,9 @@ paging_init()
     PML2_ENTRY(LOW_MEM_MAPPING_BASE) = 0 | PAGE_PRESENT | PAGE_WRITABLE | PAGE_HUGE;
 
     // force a TLB flush
-    paging_set_pml4(paging_current_pml4());
+    phys_t pml4;
+    __asm__ volatile ("mov %%cr3, %0" : "=r"(pml4));
+    __asm__ volatile ("mov %0, %%cr3" :: "r"(pml4) : "memory");
 }
 
 void
