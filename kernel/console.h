@@ -12,7 +12,4 @@ log(const char* msg);
 void
 log_x64(const char* msg, uint64_t u64);
 
-void
-panic(const char* msg);
-
 #endif

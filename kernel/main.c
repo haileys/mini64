@@ -2,6 +2,7 @@
 #include "paging.h"
 #include "console.h"
 #include "virt.h"
+#include "panic.h"
 
 void
 main()

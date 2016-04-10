@@ -12,6 +12,7 @@ KERNEL_OBJS=\
 	kernel/isrs.o \
 	kernel/main.o \
 	kernel/paging.o \
+	kernel/panic.o \
 	kernel/serial.o \
 	kernel/start.o \
 	kernel/string.o \

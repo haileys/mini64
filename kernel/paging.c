@@ -4,6 +4,7 @@
 #include "paging.h"
 #include "error.h"
 #include "string.h"
+#include "panic.h"
 
 #define REGION_USABLE           1
 #define REGION_RESERVED         2

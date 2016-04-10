@@ -3,6 +3,7 @@
 #include "io.h"
 #include "virt.h"
 #include "string.h"
+#include "panic.h"
 
 #define IDT_INTERRUPT_GATE 0x8e
 #define IDT_TRAP_GATE      0x8f

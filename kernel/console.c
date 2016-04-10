@@ -102,12 +102,3 @@ log_x64(const char* msg, uint64_t u64)
     console_write(buff);
     console_write("\n");
 }
-
-void
-panic(const char* msg)
-{
-    console_write("panic: ");
-    console_write(msg);
-    console_write("\n");
-    __asm__ volatile ("cli \n hlt");
-}
