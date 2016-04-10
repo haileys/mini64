@@ -30,7 +30,7 @@ temp_map_addr = (void*)0xffffff00001fd000;
 static void
 invlpg(void* addr)
 {
-    __asm__ volatile("invlpg %0" :: "m"(addr) : "memory");
+    __asm__ volatile("invlpg (%0)" :: "r"(addr) : "memory");
 }
 
 uint64_t
