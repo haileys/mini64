@@ -84,8 +84,12 @@ log(const char* msg)
 void
 log_x64(const char* msg, uint64_t u64)
 {
-    console_write(msg);
-    console_write(": 0x");
+    if (msg) {
+        console_write(msg);
+        console_write(": ");
+    }
+
+    console_write("0x");
 
     static const char map[] = "0123456789abcdef";
 
