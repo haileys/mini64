@@ -1,7 +1,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "mini64.h"
+#include "stddef.h"
 
 void
 console_write(const char* str);

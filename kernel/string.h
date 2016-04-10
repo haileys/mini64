@@ -1,7 +1,7 @@
 #ifndef STRING_H
 #define STRING_H
 
-#include "mini64.h"
+#include "stddef.h"
 
 void
 memmove(void* dst, const void* src, size_t n);

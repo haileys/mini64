@@ -1,4 +1,4 @@
-#include "mini64.h"
+#include "stddef.h"
 #include "gdt.h"
 #include "virt.h"
 #include "console.h"

@@ -1,4 +1,4 @@
-#include "mini64.h"
+#include "stddef.h"
 #include "paging.h"
 #include "console.h"
 #include "virt.h"

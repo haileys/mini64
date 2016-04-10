@@ -1,7 +1,7 @@
 #ifndef PAGING_H
 #define PAGING_H
 
-#include "mini64.h"
+#include "stddef.h"
 #include "error.h"
 
 typedef uint64_t phys_t;
