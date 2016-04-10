@@ -19,6 +19,7 @@ start:
 
     ; set up stack
     mov rsp, 0xffffff00001ffff8
+    xor rbp, rbp
 
     ; must be called before *anything* else
     call paging_init
